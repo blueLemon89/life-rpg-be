@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: life-rpg
+  datasource:
+    url: jdbc:postgresql://localhost:5432/life-rpg
+    username: postgres
+    password: admin
+  jpa:
+    hibernate:
+      ddl-auto: validate
+
+  flyway:
+    schemas: public
+    default-schema: public
+    baseline-on-migrate: true
+
+app:
+  auth:
+    jwt-secret: ${AUTH_SECRET:dev-secret-change-me}
+    cookie-name: session
+    cookie-max-age-seconds: 604800
+    cookie-secure: false
+    cookie-same-site: Lax
+  cors:
+    allowed-origin: http://localhost:3000
+logging:
+  level:
+    org.flywaydb: DEBUG
