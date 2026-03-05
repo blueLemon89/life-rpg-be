@@ -1,7 +1,12 @@
-package com.liferpg.service;
+package com.liferpg.service.auth;
 
 import java.util.Locale;
+import java.util.Optional;
+
+import com.liferpg.dto.request.RegisterRequest;
+import com.liferpg.service.character.ICharacterSerivce;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,10 +24,12 @@ import com.liferpg.repository.UserRepository;
    */
 @Service
 @RequiredArgsConstructor
-public class AuthServiceImpl implements AuthService {
+@Slf4j
+public class AuthServiceImpl implements IAuthService {
 
   private final UserRepository userRepository;
   private final UserProfileRepository userProfileRepository;
+  private final ICharacterSerivce characterSerivce;
   private final PasswordEncoder passwordEncoder;
 
   /**
@@ -30,18 +37,25 @@ public class AuthServiceImpl implements AuthService {
    */
   @Override
   @Transactional
-  public AuthResult register(String email, String password, String name) {
+  public AuthResult register(RegisterRequest request) {
+    String email = request.getEmail();
+    String name = request.getName();
+    String password = request.getPassword();
     String normalizedEmail = normalizeEmail(email);
-    if (userRepository.findByEmail(normalizedEmail).isPresent()) {
+    Optional<User> existedUser = userRepository.findByEmail(normalizedEmail);
+
+    if (existedUser.isPresent()) {
       throw new ConflictException("Email already exists");
     }
 
+    log.info("[Register] Start build user account");
     User user = User.builder()
         .email(normalizedEmail)
         .passwordHash(passwordEncoder.encode(password))
         .build();
     userRepository.save(user);
 
+    log.info("[Register] Start build user profile");
     UserProfile profile = UserProfile.builder()
         .userId(user.getId())
         .name(name.trim())
@@ -52,6 +66,8 @@ public class AuthServiceImpl implements AuthService {
         .title("Adventurer")
         .build();
     userProfileRepository.save(profile);
+
+    characterSerivce.initStarterCharacter(user, name);
 
     return new AuthResult(user, profile);
   }

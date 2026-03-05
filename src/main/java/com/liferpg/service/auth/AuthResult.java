@@ -1,4 +1,4 @@
-package com.liferpg.service;
+package com.liferpg.service.auth;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

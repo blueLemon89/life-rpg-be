@@ -21,10 +21,10 @@ import com.liferpg.entity.UserProfile;
 import com.liferpg.exception.UnauthorizedException;
 import com.liferpg.repository.UserProfileRepository;
 import com.liferpg.repository.UserRepository;
-import com.liferpg.service.AuthResult;
-import com.liferpg.service.AuthServiceImpl;
-import com.liferpg.service.MeService;
-import com.liferpg.service.MeServiceImpl;
+import com.liferpg.service.auth.AuthResult;
+import com.liferpg.service.auth.AuthServiceImpl;
+import com.liferpg.service.auth.IMeService;
+import com.liferpg.service.auth.MeServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
 class LifeRpgApplicationTests {
@@ -41,7 +41,7 @@ class LifeRpgApplicationTests {
   @InjectMocks
   private AuthServiceImpl authServiceImpl;
 
-  private final MeService meService = new MeServiceImpl();
+  private final IMeService meService = new MeServiceImpl();
 
   @Test
   void registerSuccess() {

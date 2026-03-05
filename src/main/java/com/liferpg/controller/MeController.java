@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.liferpg.dto.response.MeResponse;
-import com.liferpg.service.MeService;
+import com.liferpg.service.auth.IMeService;
 
 /**
   * Endpoint exposing the current authenticated user.
@@ -16,7 +16,7 @@ import com.liferpg.service.MeService;
 @RequiredArgsConstructor
 public class MeController {
 
-  private final MeService meService;
+  private final IMeService meService;
 
   /**
     * Returns the authenticated user.

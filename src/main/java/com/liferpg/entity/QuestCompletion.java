@@ -1,5 +1,6 @@
 package com.liferpg.entity;
 
+import java.time.Instant;
 import java.util.UUID;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -13,31 +14,43 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
-  * User account entity.
+  * Quest completion log entity.
    */
 @Entity
-@Table(name = "users")
+@Table(name = "quest_completions")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class User extends AuditEntity {
+public class QuestCompletion extends AuditEntity {
 
   @Id
   @Column(nullable = false, updatable = false)
   private UUID id;
 
-  @Column(nullable = false, unique = true, length = 255)
-  private String email;
+  @Column(name = "quest_id", nullable = false)
+  private UUID questId;
 
-  @Column(name = "password_hash", nullable = false, length = 255)
-  private String passwordHash;
+  @Column(name = "character_id", nullable = false)
+  private UUID characterId;
+
+  @Column(name = "completed_at", nullable = false)
+  private Instant completedAt;
+
+  @Column(name = "xp_earned", nullable = false)
+  private Integer xpEarned;
+
+  @Column(name = "gold_earned", nullable = false)
+  private Integer goldEarned;
 
   @PrePersist
   public void onCreate() {
     if (id == null) {
       id = UUID.randomUUID();
+    }
+    if (completedAt == null) {
+      completedAt = Instant.now();
     }
   }
 }
