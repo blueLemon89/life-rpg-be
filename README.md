@@ -1,20 +1,15 @@
 # life-rpg
 
-Spring Boot 4 (Java 21) backend for Life RPG.
+Spring Boot 3 (Java 21) backend for Life RPG.
 
 ## Requirements
 
 - Java 21
-- PostgreSQL (database: `liferpg`, user/password: `liferpg`)
+- PostgreSQL
 
 ## Configuration
 
 Main config file: `src/main/resources/application.yml`
-
-- JWT secret: `AUTH_SECRET` env var (fallback: `dev-secret-change-me`)
-- Session cookie name: `session`
-- Cookie max age: 7 days
-- CORS allowed origin: `http://localhost:3000`
 
 ## Run
 
