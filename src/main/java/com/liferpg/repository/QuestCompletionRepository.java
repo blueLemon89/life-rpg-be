@@ -2,12 +2,9 @@ package com.liferpg.repository;
 
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
-import com.liferpg.entity.UserProfile;
 import org.springframework.stereotype.Repository;
+import com.liferpg.entity.QuestCompletion;
 
-/**
-  * Data access for user profiles.
-   */
 @Repository
-public interface UserProfileRepository extends JpaRepository<UserProfile, UUID> {
+public interface QuestCompletionRepository extends JpaRepository<QuestCompletion, UUID> {
 }

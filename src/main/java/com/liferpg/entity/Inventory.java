@@ -13,31 +13,37 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
-  * User account entity.
+  * Inventory item entity.
    */
 @Entity
-@Table(name = "users")
+@Table(name = "inventories")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class User extends AuditEntity {
+public class Inventory extends AuditEntity {
 
   @Id
   @Column(nullable = false, updatable = false)
   private UUID id;
 
-  @Column(nullable = false, unique = true, length = 255)
-  private String email;
+  @Column(name = "character_id", nullable = false)
+  private UUID characterId;
 
-  @Column(name = "password_hash", nullable = false, length = 255)
-  private String passwordHash;
+  @Column(name = "item_id", nullable = false)
+  private UUID itemId;
+
+  @Column(nullable = false)
+  private Integer quantity;
 
   @PrePersist
   public void onCreate() {
     if (id == null) {
       id = UUID.randomUUID();
+    }
+    if (quantity == null) {
+      quantity = 1;
     }
   }
 }

@@ -1,14 +1,16 @@
-package com.liferpg.service;
+package com.liferpg.service.auth;
+
+import com.liferpg.dto.request.RegisterRequest;
 
 /**
   * Authentication service contract.
    */
-public interface AuthService {
+public interface IAuthService {
 
   /**
     * Registers a new user and profile.
      */
-  AuthResult register(String email, String password, String name);
+  AuthResult register(RegisterRequest request);
 
   /**
     * Authenticates an existing user.

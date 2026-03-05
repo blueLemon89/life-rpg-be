@@ -3,6 +3,7 @@ package com.liferpg.controller;
 import java.util.Map;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,8 +15,8 @@ import com.liferpg.dto.request.LoginRequest;
 import com.liferpg.dto.request.RegisterRequest;
 import com.liferpg.dto.response.LoginResponse;
 import com.liferpg.dto.response.RegisterResponse;
-import com.liferpg.service.AuthCookieService;
-import com.liferpg.service.AuthService;
+import com.liferpg.service.auth.AuthCookieService;
+import com.liferpg.service.auth.IAuthService;
 
 /**
   * Authentication endpoints: register, login, and logout.
@@ -23,9 +24,10 @@ import com.liferpg.service.AuthService;
 @RestController
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
+@Slf4j
 public class AuthController {
 
-  private final AuthService authService;
+  private final IAuthService authService;
   private final JwtService jwtService;
   private final AuthCookieService authCookieService;
 
@@ -34,7 +36,9 @@ public class AuthController {
      */
   @PostMapping("/register")
   public ResponseEntity<RegisterResponse> register(@Valid @RequestBody RegisterRequest request) {
-    var result = authService.register(request.getEmail(), request.getPassword(), request.getName());
+
+    log.info("[Register] Start register new user");
+    var result = authService.register(request);
     String token = jwtService.sign(
         result.getUser().getId(),
         result.getUser().getEmail(),

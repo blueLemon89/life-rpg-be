@@ -1,14 +1,11 @@
 package com.liferpg.entity;
 
-import java.time.Instant;
 import java.util.UUID;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,7 +23,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserProfile {
+public class UserProfile extends AuditEntity {
 
   @Id
   @Column(name = "user_id", nullable = false, updatable = false)
@@ -50,23 +47,4 @@ public class UserProfile {
 
   @Column(nullable = false, length = 100)
   private String title;
-
-  @Column(name = "updated_at", nullable = false)
-  private Instant updatedAt;
-
-  /**
-    * Initializes timestamp before insert.
-     */
-  @PrePersist
-  public void onCreate() {
-    updatedAt = Instant.now();
-  }
-
-  /**
-    * Updates timestamp before update.
-     */
-  @PreUpdate
-  public void onUpdate() {
-    updatedAt = Instant.now();
-  }
 }

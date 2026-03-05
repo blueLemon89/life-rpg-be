@@ -1,4 +1,4 @@
-package com.liferpg.service;
+package com.liferpg.service.auth;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -10,7 +10,7 @@ import com.liferpg.exception.UnauthorizedException;
   * Current-user endpoint business logic.
    */
 @Service
-public class MeServiceImpl implements MeService {
+public class MeServiceImpl implements IMeService {
 
   /**
    * Resolves current user from authentication principal.

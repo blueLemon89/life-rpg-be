@@ -4,10 +4,12 @@ import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 import com.liferpg.entity.User;
+import org.springframework.stereotype.Repository;
 
 /**
   * Data access for users.
    */
+@Repository
 public interface UserRepository extends JpaRepository<User, UUID> {
 
   /**

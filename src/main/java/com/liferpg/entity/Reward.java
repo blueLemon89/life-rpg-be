@@ -13,31 +13,46 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
-  * User account entity.
+  * Reward entity.
    */
 @Entity
-@Table(name = "users")
+@Table(name = "rewards")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class User extends AuditEntity {
+public class Reward extends AuditEntity {
 
   @Id
   @Column(nullable = false, updatable = false)
   private UUID id;
 
-  @Column(nullable = false, unique = true, length = 255)
-  private String email;
+  @Column(name = "character_id", nullable = false)
+  private UUID characterId;
 
-  @Column(name = "password_hash", nullable = false, length = 255)
-  private String passwordHash;
+  @Column(nullable = false, length = 255)
+  private String name;
+
+  @Column(columnDefinition = "TEXT")
+  private String description;
+
+  @Column(name = "unlock_condition", length = 255)
+  private String unlockCondition;
+
+  @Column(length = 50)
+  private String type;
+
+  @Column(name = "is_unlocked")
+  private Boolean unlocked;
 
   @PrePersist
   public void onCreate() {
     if (id == null) {
       id = UUID.randomUUID();
+    }
+    if (unlocked == null) {
+      unlocked = Boolean.FALSE;
     }
   }
 }

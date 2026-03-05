@@ -1,4 +1,4 @@
-package com.liferpg.service;
+package com.liferpg.service.auth;
 
 import java.time.Duration;
 import org.springframework.http.ResponseCookie;
