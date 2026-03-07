@@ -15,6 +15,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import com.liferpg.dto.request.RegisterRequest;
 import com.liferpg.entity.Gender;
 import com.liferpg.entity.User;
 import com.liferpg.entity.UserProfile;
@@ -25,6 +26,7 @@ import com.liferpg.service.auth.AuthResult;
 import com.liferpg.service.auth.AuthServiceImpl;
 import com.liferpg.service.auth.IMeService;
 import com.liferpg.service.auth.MeServiceImpl;
+import com.liferpg.service.character.ICharacterSerivce;
 
 @ExtendWith(MockitoExtension.class)
 class LifeRpgApplicationTests {
@@ -37,6 +39,9 @@ class LifeRpgApplicationTests {
 
   @Mock
   private PasswordEncoder passwordEncoder;
+
+  @Mock
+  private ICharacterSerivce characterSerivce;
 
   @InjectMocks
   private AuthServiceImpl authServiceImpl;
@@ -55,7 +60,8 @@ class LifeRpgApplicationTests {
     when(userProfileRepository.save(any(UserProfile.class)))
     .thenAnswer(invocation -> invocation.getArgument(0));
 
-    AuthResult result = authServiceImpl.register("test@example.com", "secret123", "Hero");
+    RegisterRequest request = new RegisterRequest("test@example.com", "secret123", "Hero");
+    AuthResult result = authServiceImpl.register(request);
 
     assertNotNull(result.getUser().getId());
     assertEquals("test@example.com", result.getUser().getEmail());
