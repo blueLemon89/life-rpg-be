@@ -16,6 +16,7 @@ import lombok.Setter;
 @Builder
 public class QuestDto {
 
+  private UUID characterQuestId;
   private UUID questId;
   private String title;
   private QuestDifficulty difficulty;
