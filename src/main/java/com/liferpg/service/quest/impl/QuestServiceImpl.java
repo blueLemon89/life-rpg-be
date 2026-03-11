@@ -3,6 +3,8 @@ package com.liferpg.service.quest.impl;
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
+
+import com.liferpg.dto.response.QuestCompleteDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -65,7 +67,7 @@ public class QuestServiceImpl implements IQuestService {
 
   @Override
   @Transactional
-  public void completeQuest(UUID characterQuestId) {
+  public QuestCompleteDTO completeQuest(UUID characterQuestId) {
     CharacterQuest characterQuest = characterQuestRepository.findById(characterQuestId)
         .orElseThrow(() -> new BadRequestException("Character quest not found"));
 
@@ -75,13 +77,12 @@ public class QuestServiceImpl implements IQuestService {
 
     Quest quest = questRepository.findById(characterQuest.getQuestId())
         .orElseThrow(() -> new BadRequestException("Quest template not found"));
-
     Character character = characterRepository.findById(characterQuest.getCharacterId())
         .orElseThrow(() -> new BadRequestException("Character not found"));
-
     int xpEarned = safeInt(quest.getXpReward());
     int goldEarned = safeInt(quest.getGoldReward());
     Instant completedAt = Instant.now();
+
 
     characterQuest.setStatus(CharacterQuestStatus.COMPLETED);
     characterQuest.setCompletedAt(completedAt);
@@ -96,24 +97,26 @@ public class QuestServiceImpl implements IQuestService {
         .completedAt(completedAt)
         .build();
     questCompletionRepository.save(completion);
-
+//
     int totalXp = safeInt(character.getXp()) + xpEarned;
     character.setXp(totalXp);
     character.setGold(safeInt(character.getGold()) + goldEarned);
     character.setLevel(calculateLevel(totalXp));
     characterRepository.save(character);
+//
+//    CharacterStats stats = characterStatsRepository.findById(character.getId())
+//        .orElseGet(() -> CharacterStats.builder()
+//            .characterId(character.getId())
+//            .currentStreak(0)
+//            .bestStreak(0)
+//            .completedQuests(0)
+//            .totalXp(0)
+//            .build());
+//    stats.setCompletedQuests(safeInt(stats.getCompletedQuests()) + 1);
+//    stats.setTotalXp(safeInt(stats.getTotalXp()) + xpEarned);
+//    characterStatsRepository.save(stats);
 
-    CharacterStats stats = characterStatsRepository.findById(character.getId())
-        .orElseGet(() -> CharacterStats.builder()
-            .characterId(character.getId())
-            .currentStreak(0)
-            .bestStreak(0)
-            .completedQuests(0)
-            .totalXp(0)
-            .build());
-    stats.setCompletedQuests(safeInt(stats.getCompletedQuests()) + 1);
-    stats.setTotalXp(safeInt(stats.getTotalXp()) + xpEarned);
-    characterStatsRepository.save(stats);
+
   }
 
   @Override
