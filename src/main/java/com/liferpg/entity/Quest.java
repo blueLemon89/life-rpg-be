@@ -49,6 +49,12 @@ public class Quest extends AuditEntity {
   @Column(name = "skill_id")
   private UUID skillId;
 
+  @Column(name = "reward_item_id")
+  private UUID rewardItemId;
+
+  @Column(name = "reward_item_quantity")
+  private Integer rewardItemQuantity;
+
   @Enumerated(EnumType.STRING)
   @Column(length = 50)
   private QuestType type;
@@ -66,6 +72,9 @@ public class Quest extends AuditEntity {
     }
     if (unlockLevel == null) {
       unlockLevel = 1;
+    }
+    if (rewardItemQuantity == null) {
+      rewardItemQuantity = 1;
     }
   }
 }

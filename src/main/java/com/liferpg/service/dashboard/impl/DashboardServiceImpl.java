@@ -75,6 +75,7 @@ public class DashboardServiceImpl implements DashboardService {
         )
         .stream()
         .map(projection -> QuestDto.builder()
+            .characterQuestId(projection.getCharacterQuestId())
             .questId(projection.getQuestId())
             .title(projection.getTitle())
             .difficulty(parseDifficulty(projection.getDifficulty()))

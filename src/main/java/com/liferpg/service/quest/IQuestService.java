@@ -10,7 +10,7 @@ public interface IQuestService {
 
     void generateStarterQuests(UUID characterId);
 
-    QuestCompleteDTO completeQuest(UUID characterQuestId);
+    QuestCompleteDTO completeQuest(UUID characterQuestId, UUID userId);
 
     List<CharacterQuest> getActiveQuests(UUID characterId);
 }
