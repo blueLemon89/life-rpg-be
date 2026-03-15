@@ -13,4 +13,6 @@ public interface IQuestService {
     QuestCompleteDTO completeQuest(UUID characterQuestId, UUID userId);
 
     List<CharacterQuest> getActiveQuests(UUID characterId);
+
+    void refeshQuest(UUID characterID);
 }
