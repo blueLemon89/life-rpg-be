@@ -5,6 +5,7 @@ package com.liferpg.entity;
    */
 public enum CharacterQuestStatus {
   ACTIVE,
+  UNACTIVE,
   COMPLETED,
   EXPIRED
 }

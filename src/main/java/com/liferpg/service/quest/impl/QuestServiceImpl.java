@@ -1,5 +1,6 @@
 package com.liferpg.service.quest.impl;
 
+import com.liferpg.dto.QuestConfigDTO;
 import com.liferpg.dto.response.QuestCompleteDTO;
 import com.liferpg.entity.Character;
 import com.liferpg.entity.CharacterQuest;
@@ -11,17 +12,11 @@ import com.liferpg.entity.LevelConfigEntity;
 import com.liferpg.entity.Quest;
 import com.liferpg.entity.QuestCompletion;
 import com.liferpg.exception.BadRequestException;
-import com.liferpg.repository.CharacterQuestRepository;
-import com.liferpg.repository.CharacterRepository;
-import com.liferpg.repository.CharacterStatsRepository;
-import com.liferpg.repository.InventoryRepository;
-import com.liferpg.repository.ItemRepository;
-import com.liferpg.repository.LevelConfigRepository;
-import com.liferpg.repository.QuestCompletionRepository;
-import com.liferpg.repository.QuestRepository;
+import com.liferpg.repository.*;
 import com.liferpg.service.quest.IQuestService;
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -44,6 +39,7 @@ public class QuestServiceImpl implements IQuestService {
   private final InventoryRepository inventoryRepository;
   private final ItemRepository itemRepository;
   private final LevelConfigRepository levelConfigRepository;
+  private final QuestConfigRepository questConfigRepository;
 
   @Override
   @Transactional
@@ -149,6 +145,48 @@ public class QuestServiceImpl implements IQuestService {
     );
   }
 
+  @Override
+  @Transactional
+  public void refeshQuest(UUID userId) {
+
+    Optional<Character> character = characterRepository.findByUserId(userId);
+    if(character.isEmpty()) {
+      log.error("[Quest] Character is not existed");
+      return;
+    }
+
+    Character characterEntity = character.get();
+    UUID characterId = characterEntity.getId();
+
+    unactiveExistedQuest(characterId);
+
+    log.info("[Quest] Start generate random for user: {}", characterId);
+
+    int level = characterRepository.getLevelById(characterId);
+
+    QuestConfigDTO configDTO = questConfigRepository.getConfigQuestByCurrentLevel(level);
+
+    String difficult = configDTO.getQuestDifficult();
+    if(difficult == null) {
+      log.warn("[Quest] Missing difficult in config");
+      return;
+    }
+    List<Quest> quests = questRepository.generateQuestDailyForCharacter(difficult);
+
+    Instant now = Instant.now();
+    List<CharacterQuest> assignments = quests.stream()
+            .map(quest -> CharacterQuest.builder()
+                    .id(UUID.randomUUID())
+                    .characterId(character.get().getId())
+                    .questId(quest.getId())
+                    .status(CharacterQuestStatus.ACTIVE)
+                    .assignedAt(now)
+                    .build())
+            .toList();
+
+    characterQuestRepository.saveAll(assignments);
+  }
+
   private void validateCharacterExists(UUID characterId) {
     if (!characterRepository.existsById(characterId)) {
       throw new BadRequestException("Character not found");
@@ -243,5 +281,12 @@ public class QuestServiceImpl implements IQuestService {
     private static RewardGrant none() {
       return new RewardGrant(null, null, null);
     }
+  }
+
+  private void unactiveExistedQuest(UUID characterId) {
+    log.info("[Quest] Start un-active existed quests");
+
+    characterQuestRepository.unactiveExistedQuest(characterId);
+    log.info("[Quest] End un-active existed quests");
   }
 }

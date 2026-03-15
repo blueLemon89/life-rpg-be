@@ -31,6 +31,14 @@ public class QuestController {
     return ResponseEntity.ok(result);
   }
 
+  @PostMapping("/refresh-daily")
+  public ResponseEntity<Object> questRefresh(Authentication authentication) {
+    UUID userId = extractUserId(authentication);
+
+    questService.refeshQuest(userId);
+    return ResponseEntity.ok("OK");
+  }
+
   private UUID extractUserId(Authentication authentication) {
     if (authentication == null
         || !(authentication.getPrincipal() instanceof AuthenticatedUserPrincipal principal)) {
